@@ -1,0 +1,16 @@
+version: "3"
+services:
+  fluentd-akamai:
+    restart: always
+    image: ${PREFIX:-coralogixrepo}/${IMAGE:-fluentd-coralogix-akamai}:${TAG:-1.0.0}
+    build:
+      dockerfile: build/Dockerfile
+      context: ..
+      args:
+        VERSION: ${VERSION:-v1.0.0}
+        GIT_COMMIT: ${GIT_COMMIT:-unknown}
+    container_name: fluentd-akamai
+    network_mode: bridge
+    env_file:
+      - ../configs/akamai.env
+      - ../configs/coralogix.env
