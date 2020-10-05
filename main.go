@@ -17,9 +17,16 @@ import (
 )
 
 var (
-	Version   string
+	// Version is utility version
+	Version string
+
+	// GitCommit is utility commit
 	GitCommit string
+
+	// GoVersion is compiled version of Go
 	GoVersion string
+
+	// BuildDate is utility compilation date
 	BuildDate string
 )
 
@@ -32,7 +39,7 @@ func main() {
 		Version:   "v1.0.0",
 		Copyright: "(c) 2020 Coralogix Inc.",
 		Authors: []*cli.Author{
-			&cli.Author{
+			{
 				Name:  "Coralogix Inc.",
 				Email: "info@coralogix.com",
 			},
@@ -138,9 +145,9 @@ func main() {
 			},
 		},
 		Action: func(ctx *cli.Context) error {
-			var response_bytes []byte
-			var response_json interface{}
-			var query_result interface{}
+			var responseBytes []byte
+			var responseJSON interface{}
+			var queryResult interface{}
 
 			config := edgegrid.Config{
 				Host:         ctx.String("host"),
@@ -168,33 +175,33 @@ func main() {
 				return cli.Exit("Cannot execute request to Akamai API!", 2)
 			}
 
-			response_bytes, _ = ioutil.ReadAll(response.Body)
+			responseBytes, _ = ioutil.ReadAll(response.Body)
 			if response.StatusCode == 204 {
 				return cli.Exit("", 0)
 			} else if response.StatusCode != 200 && ctx.Bool("debug") == true {
 				log.Println("Status code: ", response.StatusCode)
-				log.Println(string(response_bytes))
+				log.Println(string(responseBytes))
 				return cli.Exit("Not success response code!", 2)
 			}
 
-			err = json.Unmarshal(response_bytes, &response_json)
+			err = json.Unmarshal(responseBytes, &responseJSON)
 			if err != nil {
 				log.Println(err)
 				return cli.Exit("Cannot parse response from Akamai API!", 2)
 			}
 
 			if ctx.String("query") != "" {
-				query_result, err = jmespath.Search(ctx.String("query"), response_json)
+				queryResult, err = jmespath.Search(ctx.String("query"), responseJSON)
 				if err != nil {
 					log.Println(err)
 					return cli.Exit("Cannot execute query to Akamai API response!", 2)
 				}
 			} else {
-				query_result = response_json
+				queryResult = responseJSON
 			}
 
 			if ctx.Bool("flatten") == true {
-				switch result := query_result.(type) {
+				switch result := queryResult.(type) {
 				case []interface{}:
 					writer := ndjson.NewWriter(os.Stdout)
 					for _, record := range result {
@@ -204,30 +211,30 @@ func main() {
 						}
 					}
 				default:
-					json_result, err := json.Marshal(result)
+					jsonResult, err := json.Marshal(result)
 					if err != nil {
 						log.Println(err)
 						return cli.Exit("Cannot convert query result to JSON string!", 2)
 					}
-					fmt.Println(string(json_result))
+					fmt.Println(string(jsonResult))
 				}
 			} else {
-				json_result, err := json.Marshal(query_result)
+				jsonResult, err := json.Marshal(queryResult)
 				if err != nil {
 					log.Println(err)
 					return cli.Exit("Cannot convert query result to JSON string!", 2)
 				}
-				fmt.Println(string(json_result))
+				fmt.Println(string(jsonResult))
 			}
 
 			if ctx.Bool("keep-last-position") == true {
-				track_file, err := os.Create(timestampFile)
+				trackFile, err := os.Create(timestampFile)
 				if err != nil {
 					log.Println(err)
 					return cli.Exit("Cannot save last check timestamp to track file!", 2)
 				}
-				track_file.WriteString(ctx.Timestamp("end").Format(time.RFC3339))
-				track_file.Close()
+				trackFile.WriteString(ctx.Timestamp("end").Format(time.RFC3339))
+				trackFile.Close()
 			}
 
 			return nil

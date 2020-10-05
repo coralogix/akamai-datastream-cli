@@ -1,5 +1,12 @@
 # Akamai DataStream CLI
 
+[![goreportcard](https://goreportcard.com/badge/github.com/coralogix/akamai-datastream-cli)](https://goreportcard.com/report/github.com/coralogix/akamai-datastream-cli)
+[![godoc](https://img.shields.io/badge/godoc-reference-brightgreen.svg?style=flat)](https://godoc.org/github.com/coralogix/akamai-datastream-cli)
+[![license](https://img.shields.io/github/license/coralogix/akamai-datastream-cli.svg)](https://raw.githubusercontent.com/coralogix/akamai-datastream-cli/master/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/coralogix/akamai-datastream-cli.svg)](https://github.com/coralogix/akamai-datastream-cli/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/coralogix/akamai-datastream-cli.svg)](https://github.com/coralogix/akamai-datastream-cli/pulls)
+[![GitHub contributors](https://img.shields.io/github/contributors/coralogix/akamai-datastream-cli.svg)](https://github.com/coralogix/akamai-datastream-cli/graphs/contributors)
+
 `Akamai DataStream CLI` is the utility to collect logs from `Akamai DataStream API` and send it [Coralogix](https://coralogix.com/).
 
 ## Prerequisites
